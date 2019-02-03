@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>毕业论文演示 - 细胞自动机</title>
+  <script type="text/javascript" src="scripts/core.js"></script>
+  <script type="text/javascript" src="scripts/render.js"></script>
+  <script type="text/javascript" src="scripts/helper.js"></script>
+  <link rel="stylesheet" type="text/css" href="style/main.css" />
+</head>
+<body>
+  <div class="console">
+    模式:
+    <select id="mode">
+      <option value="0">DOM 直接刷新</option>
+      <option value="1">DOM diff 刷新</option>
+      <option value="2">Canvas 直接刷新</option>
+      <option value="3">Canvas diff刷新</option>
+    </select>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    Step: <span id="step">等待初始化...</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    Step Time (ms): <span id="time">等待初始化...</span>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button id="init">初始化</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button id="load">加载基准测试图案</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button id="start">开始</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button id="pause">暂停</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button id="stop">停止</button>
+  </div>
+  <div id="playground"></div>
+  <script type="text/javascript">
+    var mode = document.getElementById('mode')
+    var playground = document.getElementById('playground')
+    var step = document.getElementById('step')
+    var time = document.getElementById('time')
+    var initButton = document.getElementById('init')
+    var loadButton = document.getElementById('load')
+    var startButton = document.getElementById('start')
+    var pauseButton = document.getElementById('pause')
+    var stopButton = document.getElementById('stop')
+
+    mode.addEventListener('change', modechange)
+    initButton.addEventListener('click', init)
+    loadButton.addEventListener('click', load)
+    startButton.addEventListener('click', start)
+    pauseButton.addEventListener('click', pause)
+    stopButton.addEventListener('click', stop)
+
+    var currentMode = 0
+    var targetSize = [50, 50] // [v , h]
+
+    Render.onClick = console.log
+
+    function modechange (ev) {
+      CA.init(targetSize[0], targetSize[1])
+      Render.mode = parseInt(ev.target.value)
+      Render.initialPlayGround(playground, CA.state)
+    }
+
+    function init() {
+      CA.init(targetSize[0], targetSize[1])
+      Render.initialPlayGround(playground, CA.state)
+    }
+
+    function load () {
+      // preserve
+    }
+
+    function start () {
+      // preserve
+    }
+
+    function pause () {
+      // preserve
+    }
+
+    function stop () {
+      // preserve
+    }
+  </script>
+</body>
+</html>

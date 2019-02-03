@@ -1,0 +1,18 @@
+/* dom style */
+#playground {
+  overflow: hidden;
+}
+#playground .cell {
+  width: 9px;
+  height: 9px;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-left: none;
+  float: left;
+}
+#playground .cell.active {
+  background-color: #FF0;
+}
+#playground .cell.deactive {
+  background-color: #333;
+}
