@@ -1,39 +1,54 @@
-var CA = (function () {
-  var self = this
-  self._state = null
-  self._size = [0, 0]
-  self._step = 0
-  self.eventListener = {
+var CA = (function (helper) {
+  var _self = {}
+  _self._state = null
+  _self._size = [0, 0]
+  _self._step = 0
+  _self.eventListener = {
     mutation: [],
     beformutation: []
   }
 
   // initialize
-  function init(v, h) {
-    self._size = [v, h]
+  function init (v, h) {
+    _self._size = [v, h]
     var matrix = []
-    for (var vIndex = 0; vIndex < self._size[0]; vIndex ++) {
+    for (var vIndex = 0; vIndex < _self._size[0]; vIndex ++) {
       matrix[vIndex] = []
-      for (var hIndex = 0; hIndex < self._size[1]; hIndex ++) {
+      for (var hIndex = 0; hIndex < _self._size[1]; hIndex ++) {
         matrix[vIndex][hIndex] = false
       }
     }
+    _self._step = 0
+    setMutation(matrix)
+  }
+
+  // setState
+  function setState (targetMap) {
+    var matrix = []
+    for (var vIndex = 0; vIndex < _self._size[0]; vIndex ++) {
+      matrix[vIndex] = []
+      for (var hIndex = 0; hIndex < _self._size[1]; hIndex ++) {
+        matrix[vIndex][hIndex] = targetMap && targetMap[vIndex] && targetMap[vIndex][hIndex]
+      }
+    }
+    _self._step = 0
     setMutation(matrix)
   }
 
   // proceed one step
   function goNextStep () {
     var nextState = []
-    for (var vIndex = 0; vIndex < self._state.length; vIndex ++) {
+    for (var vIndex = 0; vIndex < _self._state.length; vIndex ++) {
       nextState[vIndex] = []
-      for (var hIndex = 0; hIndex < self._state[vIndex].length; hIndex ++) {
-        nextState[vIndex][hIndex] = self.rules(getMatrix9(vIndex, hIndex))
+      for (var hIndex = 0; hIndex < _self._state[vIndex].length; hIndex ++) {
+        nextState[vIndex][hIndex] = _self.rules(getMatrix9(vIndex, hIndex))
       }
     }
+    _self._step++
     setMutation(nextState)
   }
 
-  self.rules = function (matrix9) {
+  _self.rules = function (matrix9) {
     //    a | b | c                   v
     //    d | M | f  ==> [a, b, c, d, M, f, g, h, i]
     //    g | h | i       0  1  2  3  4  5  6  7  8
@@ -56,7 +71,6 @@ var CA = (function () {
   function getMatrix9(v, h) {
     var final = []
     for (var vIndex = v - 1; vIndex < v + 2; vIndex ++) {
-      nextState[vIndex] = []
       for (var hIndex = h - 1; hIndex < h + 2; hIndex ++) {
         final.push(getCellValue(vIndex, hIndex))
       }
@@ -66,47 +80,39 @@ var CA = (function () {
 
   // function get cell value
   function getCellValue(v, h) {
-    if (self._state && self._state.length) {
-      if (v < 0 || v >= self._state.length || h < 0 || h >= self._state[0].length) {
+    if (_self._state && _self._state.length) {
+      if (v < 0 || v >= _self._state.length || h < 0 || h >= _self._state[0].length) {
         return false
       }
-      return self._state[v, h]
+      return _self._state[v][h]
     }
     return false
   }
 
+  // toggle single cell change
+  function toogleCellValue (v, h) {
+    setCellValue(v, h, !getCellValue(v, h))
+  }
+
   // set single cell change
   function setCellValue(v, h, value) {
-    var copy = matrixDeepCopy(self._state)
+    var copy = helper.matrixDeepCopy(_self._state)
     if (copy[v] && typeof copy[v][h] === 'boolean') {
       copy[v][h] = !!value
       setMutation(copy)
     }
   }
 
-  // deep copy
-  function matrixDeepCopy (origin) {
-    var copy = []
-    origin = origin || []
-    for (var vIndex = 0; vIndex < origin.length; vIndex ++) {
-      copy[vIndex] = []
-      for (var hIndex = 0; hIndex < origin[vIndex].length; hIndex ++) {
-        copy[vIndex][hIndex] = origin[vIndex][hIndex]
-      }
-    }
-    return copy
-  }
-
   // set mutation
   function setMutation (object) {
-    var currentState = matrixDeepCopy(self._state)
-    var nextState = matrixDeepCopy(object)
+    var currentState = helper.matrixDeepCopy(_self._state)
+    var nextState = helper.matrixDeepCopy(object)
     // fire event before mucation
     dispatch('beformutation', {
       current: currentState,
       next: nextState
     })
-    self._state = nextState
+    _self._state = nextState
     // fire after mutation
     dispatch('mutation', {
       current: nextState,
@@ -116,29 +122,29 @@ var CA = (function () {
 
   // add a eventListener
   function addEventListener (eventType, fn) {
-    if (!eventType || !self.eventListener[eventType]) {
+    if (!eventType || !_self.eventListener[eventType]) {
       return null
     }
 
-    for (var eventListIndex = 0; eventListIndex < self.eventListener[eventType].length; eventListIndex ++) {
-      if (self.eventListener[eventType][eventListIndex] === fn) {
+    for (var eventListIndex = 0; eventListIndex < _self.eventListener[eventType].length; eventListIndex ++) {
+      if (_self.eventListener[eventType][eventListIndex] === fn) {
         return fn
       }
     }
 
-    self.eventListener[eventType].push(fn)
+    _self.eventListener[eventType].push(fn)
     return fn
   }
 
   // remove a eventListener
   function removeEventListener (eventType, fn) {
-    if (!eventType || !self.eventListener[eventType]) {
+    if (!eventType || !_self.eventListener[eventType]) {
       return null
     }
 
-    for (var eventListIndex = 0; eventListIndex < self.eventListener[eventType].length; eventListIndex ++) {
-      if (self.eventListener[eventType][eventListIndex] === fn) {
-        self.eventListener[eventType].splice(eventListIndex, 1)
+    for (var eventListIndex = 0; eventListIndex < _self.eventListener[eventType].length; eventListIndex ++) {
+      if (_self.eventListener[eventType][eventListIndex] === fn) {
+        _self.eventListener[eventType].splice(eventListIndex, 1)
         return fn
       }
     }
@@ -153,25 +159,28 @@ var CA = (function () {
       target: target
     }
 
-    if (!eventType || !self.eventListener[eventType]) {
+    if (!eventType || !_self.eventListener[eventType]) {
       return false
     }
 
-    for (var eventListIndex = 0; eventListIndex < self.eventListener[eventType].length; eventListIndex ++) {
-      self.eventListener[eventType][eventListIndex](event)
+    for (var eventListIndex = 0; eventListIndex < _self.eventListener[eventType].length; eventListIndex ++) {
+      _self.eventListener[eventType][eventListIndex](event)
     }
 
     return true
   }
 
   return {
-    get size() { return self._size },
-    get state() { return self._state },
-    get step() { return self._step },
-    rules: self.rules,
+    get size() { return _self._size },
+    get state() { return _self._state },
+    get step() { return _self._step },
+    rules: _self.rules,
     init: init,
     setCellValue: setCellValue,
+    setState: setState,
+    toogleCellValue: toogleCellValue,
+    goNextStep: goNextStep,
     addEventListener: addEventListener,
     removeEventListener: removeEventListener
   }
-})()
+})(helper)

@@ -2,9 +2,9 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>毕业论文演示 - 细胞自动机</title>
+  <script type="text/javascript" src="scripts/helper.js"></script>
   <script type="text/javascript" src="scripts/core.js"></script>
   <script type="text/javascript" src="scripts/render.js"></script>
-  <script type="text/javascript" src="scripts/helper.js"></script>
   <link rel="stylesheet" type="text/css" href="style/main.css" />
 </head>
 <body>
@@ -17,17 +17,15 @@
       <option value="3">Canvas diff刷新</option>
     </select>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    Step: <span id="step">等待初始化...</span>
+    Step: <span id="step">等待开始...</span>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    Step Time (ms): <span id="time">等待初始化...</span>
+    Step Time (ms): <span id="time">等待开始...</span>
     &nbsp;&nbsp;&nbsp;&nbsp;
     <button id="init">初始化</button>
     &nbsp;&nbsp;&nbsp;&nbsp;
     <button id="load">加载基准测试图案</button>
     &nbsp;&nbsp;&nbsp;&nbsp;
     <button id="start">开始</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <button id="pause">暂停</button>
     &nbsp;&nbsp;&nbsp;&nbsp;
     <button id="stop">停止</button>
   </div>
@@ -40,46 +38,73 @@
     var initButton = document.getElementById('init')
     var loadButton = document.getElementById('load')
     var startButton = document.getElementById('start')
-    var pauseButton = document.getElementById('pause')
     var stopButton = document.getElementById('stop')
 
     mode.addEventListener('change', modechange)
     initButton.addEventListener('click', init)
     loadButton.addEventListener('click', load)
     startButton.addEventListener('click', start)
-    pauseButton.addEventListener('click', pause)
     stopButton.addEventListener('click', stop)
 
     var currentMode = 0
     var targetSize = [50, 50] // [v , h]
+    var animitionTimer = null
+    var timeInterval = 200
 
-    Render.onClick = console.log
+    Render.playground = playground
+    Render.onClick = function (v, h) {
+      CA.toogleCellValue(v, h)
+    }
+    Render.mode = parseInt(mode.value)
+
+    CA.addEventListener('mutation', function (ev) {
+      Render.setPlayGround(ev.target.current, ev.target.previous)
+    })
 
     function modechange (ev) {
       CA.init(targetSize[0], targetSize[1])
       Render.mode = parseInt(ev.target.value)
-      Render.initialPlayGround(playground, CA.state)
     }
 
     function init() {
       CA.init(targetSize[0], targetSize[1])
-      Render.initialPlayGround(playground, CA.state)
+      Render.initialPlayGround(CA.state)
     }
 
     function load () {
       // preserve
+      var targetMap = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0 ,1 ,0 ,0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,0 ,0 ,0 ,1 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0 ,0 ,0 ,1 ,0 ,0 ,0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0 ,0 ,0 ,0 ,1 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1 ,0 ,0 ,0 ,1 ,0 ,0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0 ,0 ,0 ,0 ,0 ,0 ,1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ]
+
+      CA.setState(targetMap)
     }
 
     function start () {
       // preserve
-    }
-
-    function pause () {
-      // preserve
+      clearInterval(animitionTimer)
+      animitionTimer = setInterval(goNextStep, timeInterval)
     }
 
     function stop () {
       // preserve
+      clearInterval(animitionTimer)
+    }
+
+    function goNextStep () {
+      var startTime = performance.now()
+      CA.goNextStep()
+      var endTime = performance.now()
+      step.innerHTML = CA.step
+      time.innerHTML = endTime - startTime
     }
   </script>
 </body>
