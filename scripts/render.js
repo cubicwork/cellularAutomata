@@ -9,6 +9,7 @@ var Render = (function (helper) {
 
   function initialPlayGround (newState) {
     // assume an cell with 5px width and 5px height
+    _self._playground.innerHTML = ''
     if (_self._mode === 0 || _self._mode === 1) {
       _self._playground.setAttribute('style', 'width: ' + (newState[0].length * 10) + 'px;height: ' + (newState.length * 10) + 'px;')
       for (var vIndex = 0; vIndex < newState.length; vIndex ++) {
@@ -139,7 +140,6 @@ var Render = (function (helper) {
         offsetY += parseFloat(canvas.offsetTop)
         canvas = canvas.parentNode
       }
-      console.log(targetX, targetY, offsetX, offsetY)
       var h = Math.floor((targetX - offsetX) / 10)
       var v = Math.floor((targetY - offsetY + 30) / 10)
       _self.onClick(v, h)

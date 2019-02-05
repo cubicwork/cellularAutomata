@@ -48,7 +48,7 @@
     stopButton.addEventListener('click', stop)
 
     var currentMode = 0
-    var targetSize = [50, 50] // [v , h]
+    var targetSize = [100, 100] // [v , h]
     var animitionTimer = null
     var timeInterval = 200
     var runningRecord = []
@@ -64,11 +64,12 @@
     })
 
     function modechange (ev) {
-      CA.init(targetSize[0], targetSize[1])
+      init()
       Render.mode = parseInt(ev.target.value)
     }
 
     function init() {
+      runningRecord = []
       CA.init(targetSize[0], targetSize[1])
       Render.initialPlayGround(CA.state)
     }
