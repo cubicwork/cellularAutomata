@@ -19,7 +19,7 @@
     &nbsp;&nbsp;&nbsp;&nbsp;
     Step: <span id="step">等待开始...</span>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    Step Time (ms): <span id="time">等待开始...</span>
+    Step Time (ms): <span id="time">等待开始...</span> (min/avg/max :<span id="mark">等待开始...</span>)
     &nbsp;&nbsp;&nbsp;&nbsp;
     <button id="init">初始化</button>
     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -35,6 +35,7 @@
     var playground = document.getElementById('playground')
     var step = document.getElementById('step')
     var time = document.getElementById('time')
+    var mark = document.getElementById('mark')
     var initButton = document.getElementById('init')
     var loadButton = document.getElementById('load')
     var startButton = document.getElementById('start')
@@ -50,6 +51,7 @@
     var targetSize = [50, 50] // [v , h]
     var animitionTimer = null
     var timeInterval = 200
+    var runningRecord = []
 
     Render.playground = playground
     Render.onClick = function (v, h) {
@@ -103,8 +105,21 @@
       var startTime = performance.now()
       CA.goNextStep()
       var endTime = performance.now()
+      var timeSpend = endTime - startTime
       step.innerHTML = CA.step
-      time.innerHTML = endTime - startTime
+      time.innerHTML = timeSpend
+      runningRecord.push(timeSpend)
+
+      var max = 0
+      var min = 0
+      var sum = 0
+      for (var markIndex = 0; markIndex < runningRecord.length; markIndex ++) {
+        max = runningRecord[markIndex] > max ? runningRecord[markIndex] : max
+        min = runningRecord[markIndex] < min ? runningRecord[markIndex] : min
+        sum += runningRecord[markIndex]
+      }
+
+      mark.innerHTML = min + '/' + (sum / runningRecord.length).toFixed(2) + '/' + max
     }
   </script>
 </body>

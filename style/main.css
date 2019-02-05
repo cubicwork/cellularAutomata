@@ -1,4 +1,13 @@
 /* dom style */
+* {
+  margin: 0;
+  padding: 0;
+}
+.console {
+  width: 100%;
+  height: 30px;
+  overflow: hidden;
+}
 #playground {
   overflow: hidden;
 }
