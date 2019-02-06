@@ -16,18 +16,14 @@
       <option value="2">Canvas 直接刷新</option>
       <option value="3">Canvas diff刷新</option>
     </select>
-    &nbsp;&nbsp;&nbsp;&nbsp;
+    <button id="init">初始化</button>
+    <button id="load">加载基准测试图案</button>
+    <button id="start">开始</button>
+    <button id="stop">停止</button>
+    <br/>
     Step: <span id="step">等待开始...</span>
     &nbsp;&nbsp;&nbsp;&nbsp;
     Step Time (ms): <span id="time">等待开始...</span> (min/avg/max :<span id="mark">等待开始...</span>)
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <button id="init">初始化</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <button id="load">加载基准测试图案</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <button id="start">开始</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <button id="stop">停止</button>
   </div>
   <div id="playground"></div>
   <script type="text/javascript">
@@ -48,14 +44,14 @@
     stopButton.addEventListener('click', stop)
 
     var currentMode = 0
-    var targetSize = [100, 100] // [v , h]
+    var targetSize = [50, 50] // [v , h]
     var animitionTimer = null
-    var timeInterval = 200
+    var timeInterval = 100
     var runningRecord = []
 
     Render.playground = playground
     Render.onClick = function (v, h) {
-      CA.toogleCellValue(v, h)
+      CA.toggleCellValue(v, h)
     }
     Render.mode = parseInt(mode.value)
 
@@ -108,7 +104,7 @@
       var endTime = performance.now()
       var timeSpend = endTime - startTime
       step.innerHTML = CA.step
-      time.innerHTML = timeSpend
+      time.innerHTML = timeSpend.toFixed(2)
       runningRecord.push(timeSpend)
 
       var max = 0
@@ -120,7 +116,7 @@
         sum += runningRecord[markIndex]
       }
 
-      mark.innerHTML = min + '/' + (sum / runningRecord.length).toFixed(2) + '/' + max
+      mark.innerHTML = min.toFixed(2) + '/' + (sum / runningRecord.length).toFixed(2) + '/' + max.toFixed(2)
     }
   </script>
 </body>

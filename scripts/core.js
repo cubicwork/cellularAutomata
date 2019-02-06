@@ -90,7 +90,7 @@ var CA = (function (helper) {
   }
 
   // toggle single cell change
-  function toogleCellValue (v, h) {
+  function toggleCellValue (v, h) {
     setCellValue(v, h, !getCellValue(v, h))
   }
 
@@ -176,9 +176,9 @@ var CA = (function (helper) {
     get step() { return _self._step },
     rules: _self.rules,
     init: init,
-    setCellValue: setCellValue,
     setState: setState,
-    toogleCellValue: toogleCellValue,
+    setCellValue: setCellValue,
+    toggleCellValue: toggleCellValue,
     goNextStep: goNextStep,
     addEventListener: addEventListener,
     removeEventListener: removeEventListener

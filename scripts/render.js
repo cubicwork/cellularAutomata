@@ -18,7 +18,7 @@ var Render = (function (helper) {
           cell.setAttribute('id', 'cell-' + vIndex + '-' + hIndex)
           cell.setAttribute('class', newState[vIndex][hIndex] ? 'cell active' : 'cell deactive')
           cell.addEventListener('click', handleClick)
-          _self._playground.append(cell)
+          _self._playground.appendChild(cell)
         }
       }
     } else if (_self._mode === 2 || _self._mode === 3) {
@@ -30,7 +30,7 @@ var Render = (function (helper) {
         canvas.setAttribute('width', newState[1].length * 10)
         canvas.setAttribute('height', newState[0].length * 10)
         canvas.addEventListener('click', handleClick)
-        _self._playground.append(canvas)
+        _self._playground.appendChild(canvas)
       }
       // draw reacangles
       var drawable = canvas.getContext("2d")
@@ -60,7 +60,7 @@ var Render = (function (helper) {
           cell.setAttribute('id', 'cell-' + vIndex + '-' + hIndex)
           cell.setAttribute('class', newState[vIndex][hIndex] ? 'cell active' : 'cell deactive')
           cell.addEventListener('click', handleClick)
-          _self._playground.append(cell)
+          _self._playground.appendChild(cell)
         }
       }
     } else if (_self._mode === 1) {
@@ -82,7 +82,7 @@ var Render = (function (helper) {
         canvas.setAttribute('width', newState[1].length * 10)
         canvas.setAttribute('height', newState[0].length * 10)
         canvas.addEventListener('click', handleClick)
-        _self._playground.append(canvas)
+        _self._playground.appendChild(canvas)
       }
       var drawable = canvas.getContext("2d")
       drawable.clearRect(0, 0, drawable.width, drawable.height)
@@ -104,7 +104,7 @@ var Render = (function (helper) {
         canvas.setAttribute('id', canvasID)
         canvas.setAttribute('width', newState[1].length * 10)
         canvas.setAttribute('height', newState[0].length * 10)
-        _self._playground.append(canvas)
+        _self._playground.appendChild(canvas)
       }
       var drawable = canvas.getContext("2d")
       drawable.clearRect(0, 0, drawable.width, drawable.height)
@@ -141,7 +141,7 @@ var Render = (function (helper) {
         canvas = canvas.parentNode
       }
       var h = Math.floor((targetX - offsetX) / 10)
-      var v = Math.floor((targetY - offsetY + 30) / 10)
+      var v = Math.floor((targetY - offsetY + 60) / 10)
       _self.onClick(v, h)
     }
   }
