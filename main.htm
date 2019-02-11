@@ -23,7 +23,7 @@
     <br/>
     Step: <span id="step">等待开始...</span>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    Step Time (ms): <span id="time">等待开始...</span> (min/avg/max :<span id="mark">等待开始...</span>)
+    Step Time (ms): <span id="time">等待开始...</span> (avg/max :<span id="mark">等待开始...</span>)
   </div>
   <div id="playground"></div>
   <script type="text/javascript">
@@ -116,7 +116,7 @@
         sum += runningRecord[markIndex]
       }
 
-      mark.innerHTML = min.toFixed(2) + '/' + (sum / runningRecord.length).toFixed(2) + '/' + max.toFixed(2)
+      mark.innerHTML = (sum / runningRecord.length).toFixed(2) + '/' + max.toFixed(2)
     }
   </script>
 </body>
