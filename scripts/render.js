@@ -36,7 +36,7 @@ var Render = (function (helper) {
       var drawable = canvas.getContext('2d')
       drawable.clearRect(0, 0, drawable.width, drawable.height)
       drawable.lineWidth = '1'
-      drawable.strokeStyle=''#ddd'
+      drawable.strokeStyle='#ddd'
       for (var vIndex = 0; vIndex < newState.length; vIndex ++) {
         for (var hIndex = 0; hIndex < newState[vIndex].length; hIndex ++) {
           // draw path
@@ -107,7 +107,6 @@ var Render = (function (helper) {
         _self._playground.appendChild(canvas)
       }
       var drawable = canvas.getContext('2d')
-      drawable.clearRect(0, 0, drawable.width, drawable.height)
       drawable.lineWidth = '1'
       drawable.strokeStyle='#ddd'
       for (var vIndex = 0; vIndex < newState.length; vIndex ++) {
